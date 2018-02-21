@@ -1,0 +1,40 @@
+---
+- name: Just testing subelements
+  hosts: jumpbox
+  gather_facts: false
+  vars:
+    - cloud_name: ospcloud
+    - int_network_name: int_network
+  vars_files:
+    - subelements_var1.yml
+  tasks:
+
+  - debug: var=network_type
+
+  - name: Creating Internal Network
+    os_network:
+      cloud: "{{ cloud_name }}"
+      state: present
+      name: "{{ int_network_name }}"
+      external: false
+    tags:
+     - test-subelements
+
+  - name: Creating Internal Subnet
+    os_subnet:
+      cloud: "{{ cloud_name }}"
+      state: present
+      network_name: "{{ int_network_name }}"
+      name: "{{ item.0.name }}"
+      cidr: "{{ item.0.cidr }}"
+      #dns_nameservers: "{{ item.2.ip_address }}"
+      host_routes:
+        - destination: "{{ item.1.destination }}"
+        - nexthop: "{{ item.1.nexthop }}"
+    with_subelements:
+      - "{{ network_type }}"
+      - route
+    when: item.0.type == "internal"
+    tags:
+     - test-subelements
+...

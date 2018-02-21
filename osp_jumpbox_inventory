@@ -1,0 +1,3 @@
+[jumpbox]
+workstation-5fa0.rhpds.opentlc.com ansible_ssh_user=cloud-user ansible_ssh_private_key_file=/home/feliz/rhcourse/5fa0-openstack/openstack-lab-5fa0.pem
+
